@@ -1,4 +1,6 @@
 import { debugStates, render, useState } from "@harvest/core";
+import { setRouterReRender } from "../../../packages/router/src";
+import AppRouter from "./router";
 
 const Counter = ({ title = "Contador" }) => {
   const [count, setCount] = useState(0);
@@ -78,4 +80,7 @@ const App = () => {
 };
 
 console.log("Iniciando aplicación...");
-render(App, document.getElementById("root"));
+setRouterReRender(() => {
+  render(AppRouter, document.getElementById("root"));
+});
+render(AppRouter, document.getElementById("root"));

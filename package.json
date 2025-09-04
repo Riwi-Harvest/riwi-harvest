@@ -1,0 +1,31 @@
+{
+  "name": "harvest",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "license": "ISC",
+  "scripts": {
+    "start": "pnpm --filter api start",
+    "build": "concurrently \"npm i -g pnpm@latest-10\" \"pnpm install\" \"npx puppeteer install browsers chrome\" \"pnpm --filter api start\"",
+    "gcp-build": "pnpm install && pnpm --filter hipatia run install-browser",
+    "deploy": "gcloud run deploy riwi-harvest --source .",
+    "web:build": "pnpm --filter react-app build",
+    "web:dev": "pnpm --filter react-app dev",
+    "web:start": "pnpm --filter react-app start",
+    "api:start": "pnpm --filter api start",
+    "start:old": "concurrently \"pnpm web:dev\" \"pnpm api:start\""
+  },
+  "engines": {
+    "node": "22"
+  },
+  "dependencies": {
+    "@harvest/core": "workspace:^",
+    "@harvest/router": "workspace:^",
+    "concurrently": "^9.2.0",
+    "dotenv": "^17.2.1",
+    "dotenv-mono": "^1.5.0",
+    "node-cron": "3.0.3",
+    "puppeteer": "^24.17.0"
+  },
+  "packageManager": "pnpm@10.14.0"
+}

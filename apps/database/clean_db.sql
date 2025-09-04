@@ -1,0 +1,20 @@
+USE riwi_harvest_db;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE tasks_coders;
+TRUNCATE TABLE courses_coders;
+
+TRUNCATE TABLE tasks;
+TRUNCATE TABLE modules;
+TRUNCATE TABLE courses;
+TRUNCATE TABLE categories;
+TRUNCATE TABLE shifts;
+TRUNCATE TABLE cohorts;
+TRUNCATE TABLE institutions;
+
+TRUNCATE TABLE coders;
+TRUNCATE TABLE clans;
+TRUNCATE TABLE roles;
+
+SET FOREIGN_KEY_CHECKS = 1;

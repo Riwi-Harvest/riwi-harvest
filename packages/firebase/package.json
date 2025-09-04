@@ -1,0 +1,21 @@
+{
+  "name": "@harvest/firebase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0",
+  "dependencies": {
+    "dotenv-mono": "^1.5.0",
+    "firebase-admin": "^13.5.0"
+  },
+  "files": [
+    "./admin.js"
+  ]
+}

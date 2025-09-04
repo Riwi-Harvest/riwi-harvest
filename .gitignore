@@ -1,0 +1,9 @@
+node_modules
+*/node_modules
+*/dist
+apps/scrapper/downloads/*
+!apps/scrapper/downloads/.gitkeep
+.env
+*.env
+*/.env
+*/*.env

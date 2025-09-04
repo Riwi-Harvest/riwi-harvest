@@ -1,0 +1,27 @@
+{
+  "name": "@harvest/hipatia",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "install-browsers": "pnpm dlx puppeteer browsers install chrome",
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "sergiocortes-dll",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0",
+  "dependencies": {
+    "cheerio": "^1.1.2",
+    "date-fns": "^4.1.0",
+    "dotenv-mono": "^1.5.0",
+    "puppeteer": "^24.17.0",
+    "@harvest/firebase": "workspace:*"
+  },
+  "files": [
+    "src",
+    "downloads"
+  ]
+}

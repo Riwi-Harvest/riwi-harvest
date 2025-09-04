@@ -1,0 +1,26 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "firebase": "^12.2.1",
+    "firebase-admin": "^13.5.0",
+    "multer": "^2.0.2",
+    "mysql2": "^3.14.3",
+    "@harvest/firebase": "workspace:*",
+    "@harvest/hipatia": "workspace:*"
+  }
+}

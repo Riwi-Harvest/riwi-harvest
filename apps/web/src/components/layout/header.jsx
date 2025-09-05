@@ -1,7 +1,8 @@
 /** @jsx h */
+import logo from "@/assets/logoriwiharvest.png";
 import ButtonIcon from "@/components/ui/button-icon";
 import routeNames from "@/lib/routes.json";
-import logo from "@/assets/logoriwiharvest.png";
+import { navigate } from "@harvest/router";
 
 export default function Header() {
   return (
@@ -19,6 +20,11 @@ export default function Header() {
         <h2 className="text-xl font-semibold text-white">
           {routeNames[window.location.pathname]}
         </h2>
+        <div className="flex-1 flex justify-end">
+          <ButtonIcon onClick={() => navigate('/update')} label="Sincronizar">
+            <i class="fa-solid fa-rotate"></i>
+          </ButtonIcon>
+        </div>
       </div>
     </header>
   );

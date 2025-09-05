@@ -1,23 +1,29 @@
-import admin from "../../../../packages/firebase/admin.js";
 
-export async function saveToCSV(data, filename) {
+import { createClient } from '@supabase/supabase-js';
+import { dotenvLoad } from 'dotenv-mono';
+
+dotenvLoad();
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+export async function saveToCSV(csvData, filename) {
   try {
     let headers, rows;
 
-    if (Array.isArray(data)) {
-      if (Array.isArray(data[0]) && typeof data[0][0] === "object") {
-        data = data.flat();
+    if (Array.isArray(csvData)) {
+      if (Array.isArray(csvData[0]) && typeof csvData[0][0] === "object") {
+        csvData = csvData.flat();
       }
 
-      if (typeof data[0] === "object" && !Array.isArray(data[0])) {
-        headers = Object.keys(data[0] || {});
-        rows = data.map((obj) => headers.map((h) => obj[h]));
+      if (typeof csvData[0] === "object" && !Array.isArray(csvData[0])) {
+        headers = Object.keys(csvData[0] || {});
+        rows = csvData.map((obj) => headers.map((h) => obj[h]));
       } else {
         throw new Error("Formato de array no soportado");
       }
-    } else if (data.headers && data.rows) {
-      headers = data.headers;
-      rows = data.rows;
+    } else if (csvData.headers && csvData.rows) {
+      headers = csvData.headers;
+      rows = csvData.rows;
     } else {
       throw new Error("Formato de datos no soportado");
     }
@@ -44,19 +50,17 @@ export async function saveToCSV(data, filename) {
     const csvWithBOM = "\uFEFF" + csvContent;
     const buffer = Buffer.from(csvWithBOM, "utf8");
 
-    const bucket = admin.storage().bucket();
-    const file = bucket.file(`csv/${filename}`);
-
-    await file.save(buffer, {
-      gzip: true,
-      metadata: {
-        contentType: "text/csv",
-        cacheControl: "no-cache",
-      },
+    const { data, error } = await supabase.storage.from('csv').upload(filename, buffer, {
+      upsert: true
     });
 
-    console.log(`Archivo ${filename} guardado en bucket ${bucket.name}`);
-    return `gs://${bucket.name}/csv/${filename}`;
+    if (error) {
+      throw new Error(error);
+    }
+
+    console.log(data);
+
+    return `uploaded ${filename}`;
   } catch (err) {
     console.error("Error al guardar CSV en Firebase:", err);
     throw err;

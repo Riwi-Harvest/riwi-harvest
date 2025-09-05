@@ -15,10 +15,6 @@ const tablesOrder = [
     "tasks_coders"
 ];
 
-// const tablesOrder = [
-//     "tasks_coders"
-// ];
-
 export let clans_id_array = [];
 export let success_users_array = [];
 export let success_courses_array = [];

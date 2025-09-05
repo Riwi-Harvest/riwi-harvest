@@ -20,7 +20,7 @@ async function downloadHTMLTable(page, baseUrl, reportId) {
     console.log('FORM DATA', formData);
 
     if (!formData || !formData.sesskey) {
-        throw new Error("No se pudo encontrar el formulario de descarga o el sesskey");
+        throw new Error("Error: No se pudo encontrar el formulario de descarga o el sesskey");
     }
 
     console.log("Sesskey obtenido:", formData.sesskey);
@@ -51,4 +51,5 @@ async function downloadHTMLTable(page, baseUrl, reportId) {
     return response;
 }
 
-export { downloadHTMLTable }
+export { downloadHTMLTable };
+

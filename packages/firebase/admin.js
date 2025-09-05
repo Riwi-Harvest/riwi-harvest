@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Ruta absoluta al JSON
-const serviceAccountPath = path.join(__dirname, "serviceAccount.json");
+const serviceAccountPath = path.join(__dirname, "./serviceAccount.json");
 const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
 
 if (!admin.apps.length) {

@@ -6,7 +6,7 @@ const buttonIconVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-white text-black hover:bg-black/5",
+        default: "bg-white text-black hover:bg-white/90",
         primary: "bg-primary text-white hover:bg-primary/90",
         secondary: "bg-secondary text-white hover:bg-secondary/90",
         destructive: "bg-destructive text-white hover:bg-destructive/90",

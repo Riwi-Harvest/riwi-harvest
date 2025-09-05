@@ -12,8 +12,9 @@ import { scrapeReport } from './scrapeReport.js';
  * @param {import('puppeteer').Page} page
  * @returns
  */
-export async function scrapeUsers(browser, page, modules, validClanIds) {
+export async function scrapeUsers(browser, page, modules, validClanIds, sender) {
     try {
+        sender({ name: `Coders de Riwi`, status: "pending" });
         let { tableData, htmlContent } = await scrapeReport(browser, process.env.MOODLE_CODERS_REPORT_ID, "full");
 
         const usersCoursesMap = new Map();
@@ -70,19 +71,24 @@ export async function scrapeUsers(browser, page, modules, validClanIds) {
 
         const coders_table = Array.from(coders_map.values());
 
+        sender({ name: `Coders de Riwi`, status: "active" });
+
 
         for (const row of tableData.rows) {
             const courseId = row[headers['course_full_name_link - ID']];
             const courseName = row[headers['course_full_name_link']];
 
             if (courseId) { // Asegurarnos de que el ID no sea nulo o indefinido
+                sender({ name: `Curso: ${courseName}`, status: "active" });
                 usersCoursesMap.set(courseId, { id: courseId, name: courseName });
             }
         }
 
         const usersCoursesArray = Array.from(usersCoursesMap.values());
-        console.log(usersCoursesArray);
+        // console.log(usersCoursesArray);
 
+
+        sender({ name: `Notas de Coders de Riwi`, status: "pending" });
         const usersGradesMap = new Map();
 
         let tasks = [];
@@ -119,10 +125,12 @@ export async function scrapeUsers(browser, page, modules, validClanIds) {
 
         const usersGradesArray = Array.from(usersGradesMap.values())
 
-        console.log(usersGradesArray)
+        // console.log(usersGradesArray)
         let task_coders_schema = mergeStudents(usersGradesArray);
 
         console.log('TASK_TABlE', tasks_table);
+
+        sender({ name: `Notas de Coders de Riwi`, status: "active" });
 
         let tasks_coders_table = task_coders_schema.flatMap(coder =>
             Object.values(coder.grades).map(grade => ({

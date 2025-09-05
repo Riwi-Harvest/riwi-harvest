@@ -3,10 +3,11 @@ import { Router } from "@harvest/router";
 import Clanes from "./page/clanes";
 import Coders from "./page/coders";
 import Home from "./page/Home";
+import HPLV from "./page/hplv";
 import Layout from "./page/Layout";
 import Sede from "./page/sede/Sede";
 import SedeLayout from "./page/sede/SedeLayout";
-import HPLV from "./page/hplv";
+import Update from "./page/update";
 
 const Counter = ({ title = "Contador" }) => {
   const [count, setCount] = useState(0);
@@ -113,6 +114,10 @@ const routes = [
       {
         path: "versus",
         element: () => <div>Versus</div>,
+      },
+      {
+        path: "update",
+        element: Update
       },
       {
         path: "sede",

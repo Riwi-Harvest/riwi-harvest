@@ -27,7 +27,7 @@ const uploadFolder = '../downloads';
  * } | void>} Retorna un objeto con el estado de la ejecución y detalles de los
  * archivos generados si todo sale bien, o `void` en caso de error.
  */
-export const runHipatia = async () => {
+export const runHipatia = async (sender) => {
   let browser;
 
   let clans_table = [];
@@ -52,9 +52,21 @@ export const runHipatia = async () => {
     browser = await launchBrowser();
     const page = await browser.newPage();
 
+    sender({
+      name: "Login",
+      status: "pending"
+    })
+
     console.log("Iniciando login...");
     await login(page);
     console.log("Login exitoso.");
+
+    sender({
+      name: "Login",
+      status: "success",
+    })
+
+    sender({ name: "Clanes", status: "pending" })
 
     const clanRes = await scrapeReport(browser, process.env.MOODLE_CLANS_REPORT_ID)
 
@@ -77,7 +89,9 @@ export const runHipatia = async () => {
 
     const validClanIds = new Set(clans.map(clan => clan.id_clan));
 
-    clans_table = [...clans_table, ...clans]
+    clans_table = [...clans_table, ...clans];
+
+    sender({ name: "Clanes", status: "active" })
 
     const roles = [{
       id_role: 1,
@@ -98,10 +112,13 @@ export const runHipatia = async () => {
     for (const location of locations) {
       console.log(`Procesando sede: ${location.name}`);
 
+      sender({ name: location.name, status: "pending" });
+
       console.log(location);
 
       if (!location.cohorts || location.cohorts.length === 0) {
         console.log(`  No hay cohortes para ${location.name}`);
+        sender({ name: `${location.name} - Sin cohorte`, status: "active" });
         continue;
       }
 
@@ -113,10 +130,15 @@ export const runHipatia = async () => {
 
       cohorts_table = [...cohorts_table, ...cohortsTable];
 
+
+      sender({ name: location.name, status: "active" });
+
       // console.log('COHORST_TABLE:', cohortsTable)
 
       // Process cohorts sequentially with delay
       for (const cohort of location.cohorts) {
+        sender({ name: `${cohort.name} - ${location.name}`, status: "pending" });
+
         try {
           console.log(`  Procesando cohorte: ${cohort.name || cohort.link}`);
           const shiftRes = await scrapeCohorts(page, cohort.link);
@@ -134,14 +156,16 @@ export const runHipatia = async () => {
           shifts_table = [...shifts_table, ...shiftTables];
 
           // console.log('SHIFT_TABLE:', shiftTables);
+          sender({ name: `${cohort.name} - ${location.name}`, status: "active" });
 
           for (const shift of shiftRes) {
             try {
+              sender({ name: `${shift.name} - ${cohort.name} - ${location.name}`, status: "pending" });
               console.log(`Procesando Jornada ${shift.name}`);
 
               const categorieRes = await scrapeShifts(page, shift.link);
 
-              console.log(categorieRes);
+              // console.log(categorieRes);
 
               const categoriesTable = categorieRes.map((c) => ({
                 id_category: c.id,
@@ -151,14 +175,21 @@ export const runHipatia = async () => {
 
               categories_table = [...categories_table, ...categoriesTable];
 
+              sender({ name: `${shift.name} - ${cohort.name} - ${location.name}`, status: "active" });
+
               for (const courses of categorieRes) {
+                sender({ name: `${courses.name} - ${shift.name} - ${cohort.name} - ${location.name}`, status: "pending" });
                 console.log(`${courses.name}:`, courses.courses);
 
                 const courseDataRes = await scrapeReport(browser, process.env.MOODLE_COURSES_REPORT_ID)
                 // console.log('courseDataRes', courseDataRes.rows);
 
+
+                sender({ name: `${courses.name} - ${shift.name} - ${cohort.name} - ${location.name}`, status: "active" });
+
                 for (const course of courses.courses) {
                   try {
+                    sender({ name: `${course.name} - ${courses.name} - ${shift.name} - ${cohort.name} - ${location.name}`, status: "pending" });
                     console.log(`Procesando curso ${course.name}`);
                     const courseRes = await scrapeCourse(page, course.link);
 
@@ -178,13 +209,18 @@ export const runHipatia = async () => {
 
                     courses_table = [...courses_table, ...coursesTable];
 
-                    const modulesTable = courseRes.map((c) => ({
-                      id_module: c.id,
-                      name: c.name,
-                      restricted: c.restricted,
-                      hidden: c.hidden,
-                      id_course: course.id
-                    }));
+                    sender({ name: `${course.name} - ${courses.name} - ${shift.name} - ${cohort.name} - ${location.name}`, status: "active" });
+
+                    const modulesTable = courseRes.map((c) => {
+                      sender({ name: `${c.name} - ${course.name} - ${courses.name} - ${shift.name} - ${cohort.name} - ${location.name}`, status: "active" });
+                      return ({
+                        id_module: c.id,
+                        name: c.name,
+                        restricted: c.restricted,
+                        hidden: c.hidden,
+                        id_course: course.id
+                      })
+                    });
 
                     modules_table = [...modules_table, modulesTable];
                   } catch (err) {
@@ -214,8 +250,7 @@ export const runHipatia = async () => {
       }
     }
 
-    const { tasks_table, tasks_coders_table, courses_coders_table, coders_table } = await scrapeUsers(browser, page, modules_scheme, validClanIds);
-
+    const { tasks_table, tasks_coders_table, courses_coders_table, coders_table } = await scrapeUsers(browser, page, modules_scheme, validClanIds, sender);
 
     const CSVUploads = [
       {
@@ -267,6 +302,8 @@ export const runHipatia = async () => {
         filename: 'courses_coders',
       },
     ]
+
+    sender({ name: `Información obtenida`, status: "active" });
 
     CSVUploads.forEach(async (csv) => {
       try {

@@ -7,13 +7,13 @@ const buttonVariants = cva(
   {
     variants: {
       color: {
-        dashboard: "bg-[#6366F1] text-white hover:brightness-90 hover:text-black", // azul
-        clanes: "bg-[#A78BFA] text-white hover:brightness-90 hover:text-black",   // morado
-        coder: "bg-[#F87171] text-white hover:brightness-90 hover:text-black",   // rojo
-        desarrollo: "bg-[#34D399] text-white hover:brightness-90 hover:text-black", // verde
-        english: "bg-[#60A5FA] text-white hover:brightness-90 hover:text-black", // celeste
-        hplv: "bg-[#FACC15] text-black hover:brightness-90 hover:text-black",    // amarillo
-        versus: "bg-[#F472B6] text-white hover:brightness-90 hover:text-black",  // rosa
+        dashboard: "bg-[#6366F1] text-white hover:brightness-90", // azul
+        clanes: "bg-[#A78BFA] text-white hover:brightness-90 ",   // morado
+        coder: "bg-[#F87171] text-white hover:brightness-90 ",   // rojo
+        desarrollo: "bg-[#34D399] text-white hover:brightness-90 ", // verde
+        english: "bg-[#60A5FA] text-white hover:brightness-90 ", // celeste
+        hplv: "bg-[#FACC15] text-black hover:brightness-90",    // amarillo
+        versus: "bg-[#F472B6] text-white hover:brightness-90",  // rosa
       },
       size: {
         small: "p-1 text-sm",
@@ -46,7 +46,7 @@ const Button = ({
   icon,
   active,
   align,
-  color,  
+  color,
   size,
   fullWidth,
   ...props

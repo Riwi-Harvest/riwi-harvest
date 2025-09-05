@@ -7,3 +7,6 @@ apps/scrapper/downloads/*
 *.env
 */.env
 */*.env
+serviceAccount.json
+*/serviceAccount.json
+ca.pem
